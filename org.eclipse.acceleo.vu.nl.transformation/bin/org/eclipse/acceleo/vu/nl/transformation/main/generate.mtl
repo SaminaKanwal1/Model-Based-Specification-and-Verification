@@ -1,0 +1,125 @@
+[comment encoding = UTF-8 /]
+[**
+ * The documentation of the module generate.
+ * * Copyright (c) 2024, Vrije Universiteit Amsterdam 
+ * *   Contributors:
+ *   	Samina Kanwal
+ * *   Initial API and implementation and/or initial documentation
+ */]
+[module generate('http://www.vu.nl/featuremetamodel')]
+
+
+[**
+ * The documentation of the template generate.
+ * @param aClass
+ */]
+[template public generate(arootFeature : rootFeature)]
+[comment @main/]
+[file (arootFeature.name + '.SMV', false, 'UTF-8')]
+MODULE main
+-- 
+-- ICSRoute--CorporateFirewall--
+-- 
+VAR
+			[arootFeature.name/] : boolean;
+		[for(subFeatureVariables : Features | arootFeature.eAllContents(Features))]
+			[subFeatureVariables.name/] 	: boolean;
+			[if(subFeatureVariables.guardCondition = true)]
+			[subFeatureVariables.refGuard/] 			: boolean;
+			[/if]
+		[/for]
+ASSIGN
+--
+		init([arootFeature.name/]) := TRUE;
+		next([arootFeature.name/]) := case
+        		  [arootFeature.name/] : FALSE;
+        TRUE    : [arootFeature.name/]; 
+    esac;
+[for(subFeatureCase : Features | arootFeature.eAllContents(Features))]
+		[if(subFeatureCase.featureType = featureType::Mandatory) 
+								and (subFeatureCase.refFeature = 'NA')]		
+		init([subFeatureCase.name/]) := FALSE; ---With Base-Feature-----
+		next([subFeatureCase.name/]) := case
+			[subFeatureCase.baseFeaure/] : TRUE;
+        	[subFeatureCase.name/] : FALSE;
+        	TRUE    : [subFeatureCase.name/]; 
+   		esac;
+	[/if]
+[if(subFeatureCase.featureType = featureType::Mandatory) 
+						and ((subFeatureCase.refFeature = 'NA') = false)
+						and (subFeatureCase.guardCondition = 'false') ]		
+		init([subFeatureCase.name/]) := FALSE; ----With Ref-Feature----
+		next([subFeatureCase.name/]) := case
+			[subFeatureCase.baseFeaure/] & [subFeatureCase.refFeature/] : TRUE;
+        	[subFeatureCase.name/] : FALSE;
+        	TRUE    : [subFeatureCase.name/]; 
+   		esac;
+	[/if]
+[if(subFeatureCase.featureType = featureType::Mandatory) 
+						and (subFeatureCase.guardCondition = 'true') ]
+		[subFeatureCase.refGuard/] 	: boolean;	---With Gaurd---
+		init([subFeatureCase.name/]) := FALSE; 
+		next([subFeatureCase.name/]) := case
+			[subFeatureCase.refGuard/] & [subFeatureCase.baseFeaure/] & [subFeatureCase.refFeature/] : TRUE;
+        	[subFeatureCase.name/] : FALSE;
+        	TRUE    : [subFeatureCase.name/]; 
+   		esac;
+	[/if]
+[/for]
+[for(subFeatureCase : Features | arootFeature.eAllContents(Features))]
+		[if(subFeatureCase.featureType = featureType::Or) and ((subFeatureCase.refFeature = 'NA') = false)]
+		[subFeatureCase.refGuard/] 	: boolean;	---Or---	
+		init([subFeatureCase.name/]) := FALSE; 
+		next([subFeatureCase.name/]) := case
+			[subFeatureCase.baseFeaure/] & [subFeatureCase.refFeature/] & [subFeatureCase.refGuard/] : TRUE;
+        	[subFeatureCase.name/] : FALSE;
+        	TRUE    : [subFeatureCase.name/]; 
+   		esac;
+	[/if]
+[/for]
+[for(subFeatureCase : Features | arootFeature.eAllContents(Features))]
+		[if(subFeatureCase.featureType = featureType::Optional) and ((subFeatureCase.refFeature = 'NA') = false)]
+		[subFeatureCase.refGuard/] 	: boolean;	---Optional---	
+		init([subFeatureCase.name/]) := FALSE; 
+		next([subFeatureCase.name/]) := case
+			[subFeatureCase.baseFeaure/] & [subFeatureCase.refFeature/] & [subFeatureCase.refGuard/] : TRUE;
+        	[subFeatureCase.name/] : FALSE;
+        	TRUE    : [subFeatureCase.name/]; 
+   		esac;
+	[/if]
+[/for]
+[for(subFeatureCase : Features | arootFeature.eAllContents(Features))]
+		[if(subFeatureCase.featureType = featureType::Optional) and (subFeatureCase.refFeature = 'NA')]
+		[subFeatureCase.refGuard/] 	: boolean;	---Optional---NA---	
+		init([subFeatureCase.name/]) := FALSE; 
+		next([subFeatureCase.name/]) := case
+			[subFeatureCase.baseFeaure/] & [subFeatureCase.refGuard/] : TRUE;
+        	[subFeatureCase.name/] : FALSE;
+        	TRUE    : [subFeatureCase.name/]; 
+   		esac;
+	[/if]
+[/for]
+[for(subFeatureCase : Features | arootFeature.eAllContents(Features))]
+		[if(subFeatureCase.featureType = featureType::Alternative) and (subFeatureCase.description = '!') = false]
+		[subFeatureCase.refGuard/] 	: boolean;	---Alternative---NA---	
+		init([subFeatureCase.name/]) := FALSE; 
+		next([subFeatureCase.name/]) := case
+			[subFeatureCase.baseFeaure/] & [subFeatureCase.refGuard/] : TRUE;
+        	[subFeatureCase.name/] : FALSE;
+        	TRUE    : [subFeatureCase.name/]; 
+   		esac;
+	[/if]
+[/for]
+[for(subFeatureCase : Features | arootFeature.eAllContents(Features))]
+		[if(subFeatureCase.featureType = featureType::Alternative) and (subFeatureCase.description = '!') ]
+		[subFeatureCase.refGuard/] 	: boolean;	---Alternative---NA---	
+		init([subFeatureCase.name/]) := FALSE; 
+		next([subFeatureCase.name/]) := case
+			[subFeatureCase.baseFeaure/] & [subFeatureCase.description/][subFeatureCase.refGuard/] : TRUE;
+        	[subFeatureCase.name/] : FALSE;
+        	TRUE    : [subFeatureCase.name/]; 
+   		esac;
+	[/if]
+[/for]
+[/file]
+[/template]
