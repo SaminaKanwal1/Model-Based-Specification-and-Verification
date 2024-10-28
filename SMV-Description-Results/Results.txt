@@ -1,0 +1,177 @@
+Microsoft Windows [Version 10.0.22621.3527]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\ska378>cd..
+
+C:\Users>cd..
+
+C:\>cd \Program Files\NuSMV2\bin
+
+C:\Program Files\NuSMV2\bin>SNA.smv
+
+C:\Program Files\NuSMV2\bin>NuSMV -int
+*** This is NuSMV 2.6.0 (compiled on Wed Oct 14 15:37:51 2015)
+*** Enabled addons are: compass
+*** For more information on NuSMV see <http://nusmv.fbk.eu>
+*** or email to <nusmv-users@list.fbk.eu>.
+*** Please report bugs to <Please report bugs to <nusmv-users@fbk.eu>>
+
+*** Copyright (c) 2010-2014, Fondazione Bruno Kessler
+
+*** This version of NuSMV is linked to the CUDD library version 2.4.1
+*** Copyright (c) 1995-2004, Regents of the University of Colorado
+
+*** This version of NuSMV is linked to the MiniSat SAT solver.
+*** See http://minisat.se/MiniSat.html
+*** Copyright (c) 2003-2006, Niklas Een, Niklas Sorensson
+*** Copyright (c) 2007-2010, Niklas Sorensson
+
+NuSMV > read_model -i SNA.smv
+NuSMV > flatten_hierarchy
+NuSMV > encode_variables
+NuSMV > build_model
+NuSMV > check_ltlspec
+-- specification ( G (ICSRouter ->  F ((CorporateFirewall & ControlCenterFirewall) & ManufacturingZoneFireWall)) &  H (((CorporateFirewall & ControlCenterFirewall) & ManufacturingZoneFireWall) ->  O ICSRouter))  is true
+-- specification ( G (CorporateDemilitarizedZones ->  F CorporateAuthenticationServer) &  H (CorporateAuthenticationServer ->  O CorporateDemilitarizedZones))  is true
+-- specification ( G (ManufacturingZoneDemilitarizedZones ->  F ManufacturingZoneDomainController) &  H (ManufacturingZoneDomainController ->  O ManufacturingZoneDemilitarizedZones))  is true
+-- specification ( G (ManufacturingZoneDemilitarizedZones ->  F ManufacturingZoneConfigurationServer) &  H (ManufacturingZoneConfigurationServer ->  O ManufacturingZoneDemilitarizedZones))  is true
+-- specification ( G (ManufacturingZoneDemilitarizedZones ->  F LocalHMILAN1) &  H (LocalHMILAN1 ->  O ManufacturingZoneDemilitarizedZones))  is true
+-- specification ( G (ManufacturingZoneDemilitarizedZones ->  F LocalHMILAN2) &  H (LocalHMILAN2 ->  O ManufacturingZoneDemilitarizedZones))  is true
+-- specification  G ((CorporateDemilitarizedZones & CorporateAuthenticationServer) ->  F CorporateWebServer)  is true
+-- specification ( F ControlCenterRemoteAcess -> (!ControlCenterRemoteAcess U (ControlCenterDemilitarizedZones & guard_CCRA)))  is true
+-- specification  G ((CorporateAuthenticationServer & EnterpriseDemilitarizedZones) ->  F BusinessServer)  is true
+-- specification ( G (((CorporateAuthenticationServer & CorporateDemilitarizedZones) & guard_CFTP) ->  F CorporateFTPServer) |  G (((CorporateFTPServer & CorporateDemilitarizedZones) & guard_CE) ->  F CorporateEmailServer))  is true
+-- specification  G (((CorporateAuthenticationServer & guard_MZEWS) & ManufacturingZoneDemilitarizedZones) ->  F ManufacturingZoneEngineeringWorkstations)  is true
+-- specification  G (((CorporateAuthenticationServer & guard_MZDBS) & ManufacturingZoneDemilitarizedZones) ->  F ManufacturingZoneDatabaseServer)  is true
+-- specification  G ((CorporateAuthenticationServer & LocalHMILAN1) ->  F ControlerLAN1)  is true
+-- specification ( G (CorporateDemilitarizedZones ->  F (((CorporateAuthenticationServer & CorporateEmailServer) & CorporateFTPServer) & CorporateWebServer)) &  H ((((CorporateAuthenticationServer & CorporateEmailServer) & CorporateFTPServer) & CorporateWebServer) ->  O CorporateDemilitarizedZones))  is false
+-- as demonstrated by the following execution sequence
+Trace Description: LTL Counterexample
+Trace Type: Counterexample
+  -> State: 1.1 <-
+    ICSRouter = TRUE
+    CorporateFirewall = FALSE
+    ControlCenterFirewall = FALSE
+    ManufacturingZoneFireWall = FALSE
+    CorporateDemilitarizedZones = FALSE
+    EnterpriseDemilitarizedZones = FALSE
+    ControlCenterDemilitarizedZones = FALSE
+    ManufacturingZoneDemilitarizedZones = FALSE
+    CorporateAuthenticationServer = FALSE
+    CorporateWebServer = FALSE
+    CorporateFTPServer = FALSE
+    guard_CFTP = FALSE
+    CorporateEmailServer = FALSE
+    guard_CE = FALSE
+    BusinessServer = FALSE
+    EnterpriseDesktop = FALSE
+    guard_ED = FALSE
+    EnterpriseWebApplicationServer = FALSE
+    guard_EWS = FALSE
+    EnterpriseDomainServer = FALSE
+    guard_EDS = FALSE
+    ControlCenterWorkstation = FALSE
+    guard_CCW = FALSE
+    ControlCenterAV = FALSE
+    guard_CCAV = FALSE
+    ControlCenterHistorian = FALSE
+    guard_CCH = FALSE
+    ControlCenterPatchServer = FALSE
+    guard_CCPS = FALSE
+    ControlCenterRemoteAcess = FALSE
+    guard_CCRA = FALSE
+    ControlCenterJumpServer = FALSE
+    ManufacturingZoneDomainController = FALSE
+    ManufacturingZoneConfigurationServer = FALSE
+    ManufacturingZoneHistorian = FALSE
+    guard_MZH = FALSE
+    ManufacturingZoneDatabaseServer = FALSE
+    guard_MZDBS = FALSE
+    ManufacturingZoneEngineeringWorkstations = FALSE
+    guard_MZEWS = FALSE
+    ManufacturingZoneHMIComputers = FALSE
+    guard_MZHMIC = FALSE
+    LocalHMILAN1 = FALSE
+    ControlerLAN1 = FALSE
+    FiledDeviceC1 = FALSE
+    guard_FDC1 = FALSE
+    SensorC1 = FALSE
+    guard_SC1 = FALSE
+    ActuatorC1 = FALSE
+    guard_AC1 = FALSE
+    LocalHMI1 = FALSE
+    guard_LHMI1 = FALSE
+    FiledDeviceL1 = FALSE
+    guard_FDL1 = FALSE
+    SensorL1 = FALSE
+    guard_SL1 = FALSE
+    ActuatorL1 = FALSE
+    guard_AL1 = FALSE
+    LocalHMILAN2 = FALSE
+    ControlerLAN2 = FALSE
+    FiledDeviceC2 = FALSE
+    guard_FDC2 = FALSE
+    SensorC2 = FALSE
+    guard_SC2 = FALSE
+    ActuatorC2 = FALSE
+    guard_AC2 = FALSE
+    LocalHMI2 = FALSE
+    guard_LHMI2 = FALSE
+    FiledDeviceL2 = FALSE
+    guard_FDL2 = FALSE
+    SensorL2 = FALSE
+    guard_SL2 = FALSE
+    ActuatorL2 = FALSE
+    guard_AL2 = FALSE
+    post_alternative_807 = undetermined
+    merge_flag_1 = undetermined
+    MergeNode1 = FALSE
+    merge_flag_2 = undetermined
+  
+  -> State: 1.4 <-
+    CorporateDemilitarizedZones = FALSE
+    EnterpriseDemilitarizedZones = FALSE
+    ControlCenterDemilitarizedZones = FALSE
+    ManufacturingZoneDemilitarizedZones = FALSE
+    CorporateAuthenticationServer = TRUE
+    ControlCenterJumpServer = TRUE
+    ManufacturingZoneDomainController = TRUE
+    ManufacturingZoneConfigurationServer = TRUE
+    LocalHMILAN1 = TRUE
+    LocalHMILAN2 = TRUE
+  -> State: 1.5 <-
+    CorporateAuthenticationServer = FALSE
+    ControlCenterJumpServer = FALSE
+    ManufacturingZoneDomainController = FALSE
+    ManufacturingZoneConfigurationServer = FALSE
+    LocalHMILAN1 = FALSE
+    ControlerLAN1 = TRUE
+    LocalHMILAN2 = FALSE
+    ControlerLAN2 = TRUE
+  -- Loop starts here
+  -> State: 1.6 <-
+    ControlerLAN1 = FALSE
+    ControlerLAN2 = FALSE
+  -> State: 1.7 <-
+-- specification  G ((guard_LHMI1 & ControlerLAN1) ->  F LocalHMI1)  is true
+-- specification  G ((CorporateAuthenticationServer & LocalHMILAN2) ->  F ControlerLAN2)  is true
+-- specification (( G (((CorporateAuthenticationServer & EnterpriseDemilitarizedZones) & guard_EWS) ->  F EnterpriseWebApplicationServer) |  G (((EnterpriseWebApplicationServer & EnterpriseDemilitarizedZones) & guard_EDS) ->  F EnterpriseDomainServer)) |  G (((BusinessServer & EnterpriseDemilitarizedZones) & guard_ED) ->  F EnterpriseDesktop))  is true
+-- specification  G ((((guard_MZHMIC & ControlerLAN2) & ControlerLAN1) & ManufacturingZoneDemilitarizedZones) ->  F ManufacturingZoneHMIComputers)  is true
+-- specification  G ((guard_LHMI2 & ControlerLAN2) ->  F LocalHMI2)  is true
+-- specification (ManufacturingZoneDemilitarizedZones ->  F ((ManufacturingZoneHistorian & !ManufacturingZoneHMIComputers) | (!ManufacturingZoneHistorian & ManufacturingZoneHMIComputers)))  is true
+-- specification (((( G (((CorporateAuthenticationServer & ControlCenterDemilitarizedZones) & guard_CCW) ->  F ControlCenterWorkstation) |  G ((ControlCenterDemilitarizedZones & guard_CCAV) ->  F ControlCenterAV)) |  G ((ControlCenterDemilitarizedZones & guard_CCH) ->  F ControlCenterHistorian)) |  G ((ControlCenterDemilitarizedZones & guard_CCPS) ->  F ControlCenterPatchServer)) |  G ((ControlCenterDemilitarizedZones & guard_CCRA) ->  F ControlCenterRemoteAcess))  is true
+-- specification (( G ((guard_FDL1 & LocalHMI1) ->  F FiledDeviceL1) |  G ((guard_SL1 & LocalHMI1) ->  F SensorL1)) |  G ((guard_AL1 & LocalHMI1) ->  F ActuatorL1))  is true
+-- specification (( G (((guard_FDC1 & ControlerLAN1) & ControlCenterPatchServer) ->  F FiledDeviceC1) |  G ((guard_SC1 & ControlerLAN1) ->  F SensorC1)) |  G ((guard_AC1 & ControlerLAN1) ->  F ActuatorC1))  is true
+-- specification (( G ((guard_FDL2 & LocalHMI2) ->  F FiledDeviceL2) |  G ((guard_SL2 & LocalHMI2) ->  F SensorL2)) |  G ((guard_AL2 & LocalHMI2) ->  F ActuatorL2))  is true
+-- specification (( G (((guard_FDC2 & ControlerLAN2) & ControlCenterPatchServer) ->  F FiledDeviceC2) |  G ((guard_SC2 & ControlerLAN2) ->  F SensorC2)) |  G ((guard_AC2 & ControlerLAN2) ->  F ActuatorC2))  is true
+NuSMV > compute_reachable
+The computation of reachable states has been completed.
+The diameter of the FSM is 6.
+NuSMV > print_reachable_states
+######################################################################
+system diameter: 6
+reachable states: 324 (2^8.33985) out of 1.02003e+024 (2^79.7549)
+######################################################################
+NuSMV >
+
+1 out of 25 Formula is false.

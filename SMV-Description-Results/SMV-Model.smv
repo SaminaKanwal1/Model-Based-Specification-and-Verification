@@ -1,0 +1,495 @@
+MODULE main
+-- 
+-- ICSRoute--CorporateFirewall--V2
+-- 
+
+VAR
+	ICSRouter		: boolean;
+	CorporateFirewall	: boolean;
+	ControlCenterFirewall	: boolean;
+	ManufacturingZoneFireWall	: boolean;
+	CorporateDemilitarizedZones	: boolean;
+	EnterpriseDemilitarizedZones	: boolean;
+	ControlCenterDemilitarizedZones	: boolean;
+	ManufacturingZoneDemilitarizedZones	: boolean;
+	CorporateAuthenticationServer	: boolean;
+	CorporateWebServer	: boolean;
+	CorporateFTPServer	: boolean;
+	guard_CFTP	: boolean;
+	CorporateEmailServer	: boolean;
+	guard_CE	: boolean;
+	BusinessServer	: boolean;
+	EnterpriseDesktop	: boolean;
+	guard_ED	: boolean;
+	EnterpriseWebApplicationServer	: boolean;
+	guard_EWS	: boolean;
+	EnterpriseDomainServer	: boolean;
+	guard_EDS	: boolean;
+	ControlCenterWorkstation	: boolean;
+	guard_CCW	: boolean;
+	ControlCenterAV		: boolean;
+	guard_CCAV	: boolean;
+	ControlCenterHistorian	: boolean;
+	guard_CCH	: boolean;
+	ControlCenterPatchServer	: boolean;
+	guard_CCPS	: boolean;
+	ControlCenterRemoteAcess	: boolean;
+	guard_CCRA	: boolean;
+	ControlCenterJumpServer	: boolean;	
+	ManufacturingZoneDomainController	: boolean;	
+	ManufacturingZoneConfigurationServer	: boolean;
+	ManufacturingZoneHistorian	: boolean;
+	guard_MZH	: boolean;
+	ManufacturingZoneDatabaseServer	: boolean;
+	guard_MZDBS	: boolean;
+	ManufacturingZoneEngineeringWorkstations	: boolean;
+	guard_MZEWS	: boolean;
+	ManufacturingZoneHMIComputers	: boolean;
+	guard_MZHMIC	: boolean;
+	LocalHMILAN1	: boolean;
+	ControlerLAN1	: boolean;
+	FiledDeviceC1	: boolean;
+	guard_FDC1	: boolean;
+	SensorC1	: boolean;
+	guard_SC1	: boolean;
+	ActuatorC1	: boolean;
+	guard_AC1	: boolean;
+	LocalHMI1	: boolean;
+	guard_LHMI1	: boolean;
+	FiledDeviceL1	: boolean;
+	guard_FDL1	: boolean;
+	SensorL1	: boolean;
+	guard_SL1	: boolean;
+	ActuatorL1	: boolean;
+	guard_AL1	: boolean;
+	LocalHMILAN2	: boolean;
+	ControlerLAN2	: boolean;
+	FiledDeviceC2	: boolean;
+	guard_FDC2	: boolean;
+	SensorC2	: boolean;
+	guard_SC2	: boolean;
+	ActuatorC2	: boolean;
+	guard_AC2	: boolean;
+	LocalHMI2	: boolean;
+	guard_LHMI2	: boolean;
+	FiledDeviceL2	: boolean;
+	guard_FDL2	: boolean;	
+	SensorL2	: boolean;
+	guard_SL2	: boolean;
+	ActuatorL2	: boolean;
+	guard_AL2	: boolean;
+	post_alternative_807 		: {undetermined, guard_5, guard_6};
+	merge_flag_1 			: {undetermined, in_req1, in_req2};
+	MergeNode1			: boolean;
+	merge_flag_2 			: {undetermined, in_req3, in_req4};
+
+
+
+ASSIGN
+--
+init(ICSRouter) := TRUE;
+next(ICSRouter) := case
+        ICSRouter : FALSE;
+        TRUE    : ICSRouter; 
+    esac;
+init(CorporateFirewall) := FALSE;
+next(CorporateFirewall) := case
+        ICSRouter : TRUE;
+        CorporateFirewall : FALSE;
+        TRUE    : CorporateFirewall; 
+    esac;
+
+init(ControlCenterFirewall) := FALSE;
+next(ControlCenterFirewall) := case
+        ICSRouter  : TRUE;
+        ControlCenterFirewall : FALSE;
+        TRUE    : ControlCenterFirewall; 
+    esac;
+init(ManufacturingZoneFireWall) := FALSE;
+next(ManufacturingZoneFireWall) := case
+      ICSRouter : TRUE;
+        ICSRouter : FALSE;
+        TRUE    : ManufacturingZoneFireWall; 
+    esac;
+
+init(CorporateDemilitarizedZones) := FALSE;
+next(CorporateDemilitarizedZones) := case
+        CorporateFirewall : TRUE;
+        CorporateDemilitarizedZones : FALSE;
+        TRUE    : CorporateDemilitarizedZones; 
+    esac;
+
+init(EnterpriseDemilitarizedZones) := FALSE;
+next(EnterpriseDemilitarizedZones) := case
+        CorporateFirewall : TRUE;
+        EnterpriseDemilitarizedZones : FALSE;
+        TRUE    : EnterpriseDemilitarizedZones; 
+    esac;
+
+init(ControlCenterDemilitarizedZones) := FALSE;
+next(ControlCenterDemilitarizedZones) := case
+        ControlCenterFirewall : TRUE;
+        ControlCenterDemilitarizedZones : FALSE;
+        TRUE    : ControlCenterDemilitarizedZones; 
+    esac;
+
+init(ManufacturingZoneDemilitarizedZones) := FALSE;
+next(ManufacturingZoneDemilitarizedZones) := case
+        ControlCenterFirewall : TRUE;
+        ManufacturingZoneDemilitarizedZones : FALSE;
+        TRUE    : ManufacturingZoneDemilitarizedZones; 
+    esac;
+
+init(CorporateAuthenticationServer) := FALSE;
+next(CorporateAuthenticationServer) := case
+        CorporateDemilitarizedZones : TRUE;
+        CorporateAuthenticationServer : FALSE;
+        TRUE    : CorporateAuthenticationServer; 
+    esac;
+
+init(CorporateWebServer) := FALSE;
+next(CorporateWebServer) := case
+        CorporateAuthenticationServer & CorporateDemilitarizedZones : TRUE;
+        CorporateWebServer : FALSE;
+        TRUE    : CorporateWebServer; 
+    esac;
+
+guard_CFTP := FALSE;
+init(CorporateFTPServer) := FALSE;
+next(CorporateFTPServer) := case
+       CorporateAuthenticationServer & CorporateDemilitarizedZones & guard_CFTP : TRUE;
+        CorporateFTPServer : FALSE;
+        TRUE    : CorporateFTPServer; 
+    esac;
+
+guard_CE := FALSE;
+init(CorporateEmailServer) := FALSE;
+next(CorporateEmailServer) := case
+        CorporateFTPServer & CorporateDemilitarizedZones & guard_CE : TRUE;
+        CorporateEmailServer : FALSE;
+        TRUE    : CorporateEmailServer; 
+    esac;
+----EnterpriseDemilitarizedZones----
+
+init(BusinessServer) := FALSE;
+next(BusinessServer) := case
+       CorporateAuthenticationServer & EnterpriseDemilitarizedZones : TRUE;
+        BusinessServer : FALSE;
+        TRUE    : BusinessServer; 
+    esac;
+
+guard_ED := FALSE;
+init(EnterpriseDesktop) := FALSE;
+next(EnterpriseDesktop) := case
+        BusinessServer & EnterpriseDemilitarizedZones & guard_ED : TRUE;
+        EnterpriseDesktop : FALSE;
+        TRUE    : EnterpriseDesktop; 
+    esac;
+
+guard_EWS := FALSE;
+init(EnterpriseWebApplicationServer) := FALSE;
+next(EnterpriseWebApplicationServer) := case
+        CorporateAuthenticationServer & EnterpriseDemilitarizedZones & guard_EWS : TRUE;
+        EnterpriseWebApplicationServer : FALSE;
+        TRUE    : EnterpriseWebApplicationServer; 
+    esac;
+
+
+guard_EDS := FALSE;
+init(EnterpriseDomainServer) := FALSE;
+next(EnterpriseDomainServer) := case
+        EnterpriseWebApplicationServer & EnterpriseDemilitarizedZones & guard_EDS : TRUE;
+        EnterpriseDomainServer : FALSE;
+        TRUE    : EnterpriseDomainServer; 
+    esac;
+
+----ControlCenterDemilitarizedZones----
+
+guard_CCW := FALSE;
+init(ControlCenterWorkstation) := FALSE;
+next(ControlCenterWorkstation) := case
+        CorporateAuthenticationServer & ControlCenterDemilitarizedZones & guard_CCW : TRUE;
+        ControlCenterWorkstation : FALSE;
+        TRUE    : ControlCenterWorkstation; 
+    esac;
+
+guard_CCAV := FALSE;
+init(ControlCenterAV) := FALSE;
+next(ControlCenterAV) := case
+        ControlCenterDemilitarizedZones & guard_CCAV : TRUE;
+        ControlCenterAV : FALSE;
+        TRUE    : ControlCenterAV; 
+    esac;
+
+guard_CCH := FALSE;
+init(ControlCenterHistorian) := FALSE;
+next(ControlCenterHistorian) := case
+        ControlCenterDemilitarizedZones & guard_CCH : TRUE;
+        ControlCenterHistorian : FALSE;
+        TRUE    : ControlCenterHistorian; 
+    esac;
+
+guard_CCPS := FALSE;
+init(ControlCenterPatchServer) := FALSE;
+next(ControlCenterPatchServer) := case
+        ControlCenterDemilitarizedZones & guard_CCPS : TRUE;
+        ControlCenterPatchServer : FALSE;
+        TRUE    : ControlCenterPatchServer; 
+    esac;
+
+guard_CCRA := FALSE;
+init(ControlCenterRemoteAcess) := FALSE;
+next(ControlCenterRemoteAcess) := case
+        ControlCenterDemilitarizedZones & guard_CCRA : TRUE;
+        ControlCenterRemoteAcess : FALSE;
+        TRUE    : ControlCenterRemoteAcess; 
+    esac;
+
+init(ControlCenterJumpServer) := FALSE;
+next(ControlCenterJumpServer) := case
+        ControlCenterDemilitarizedZones & !guard_CCRA : TRUE;
+        ControlCenterJumpServer : FALSE;
+        TRUE    : ControlCenterJumpServer; 
+    esac;
+----ManufacturingZoneDemilitarizedZones----
+
+
+init(ManufacturingZoneDomainController) := FALSE;
+next(ManufacturingZoneDomainController) := case
+        ManufacturingZoneDemilitarizedZones : TRUE;
+        ManufacturingZoneDomainController : FALSE;
+        TRUE    : ManufacturingZoneDomainController; 
+    esac;
+
+init(ManufacturingZoneConfigurationServer) := FALSE;
+next(ManufacturingZoneConfigurationServer) := case
+        ManufacturingZoneDemilitarizedZones : TRUE;
+        ManufacturingZoneConfigurationServer : FALSE;
+        TRUE    : ManufacturingZoneConfigurationServer; 
+    esac;
+
+guard_MZH := FALSE;
+init(ManufacturingZoneHistorian) := FALSE;
+next(ManufacturingZoneHistorian) := case
+        guard_MZH & ManufacturingZoneDemilitarizedZones : TRUE;
+        ManufacturingZoneHistorian : FALSE;
+        TRUE    : ManufacturingZoneHistorian; 
+    esac;
+
+guard_MZDBS := FALSE;
+init(ManufacturingZoneDatabaseServer) := FALSE;
+next(ManufacturingZoneDatabaseServer) := case
+     CorporateAuthenticationServer &  guard_MZDBS & ManufacturingZoneDemilitarizedZones : TRUE;
+        ManufacturingZoneDatabaseServer : FALSE;
+        TRUE    : ManufacturingZoneDatabaseServer; 
+    esac;
+
+guard_MZEWS := FALSE;
+init(ManufacturingZoneEngineeringWorkstations) := FALSE;
+next(ManufacturingZoneEngineeringWorkstations) := case
+        CorporateAuthenticationServer & guard_MZEWS & ManufacturingZoneDemilitarizedZones : TRUE;
+        ManufacturingZoneEngineeringWorkstations : FALSE;
+        TRUE    : ManufacturingZoneEngineeringWorkstations; 
+    esac;
+
+guard_MZHMIC := FALSE;
+init(ManufacturingZoneHMIComputers) := FALSE;
+next(ManufacturingZoneHMIComputers) := case
+        guard_MZHMIC & ControlerLAN2 & ControlerLAN1 & ManufacturingZoneDemilitarizedZones : TRUE;
+        ManufacturingZoneHMIComputers : FALSE;
+        TRUE    : ManufacturingZoneHMIComputers; 
+    esac;
+----LocalHMILAN1----
+
+init(LocalHMILAN1) := FALSE;
+next(LocalHMILAN1) := case
+      ManufacturingZoneDemilitarizedZones : TRUE;
+        LocalHMILAN1 : FALSE;
+        TRUE    : LocalHMILAN1; 
+    esac;
+
+init(ControlerLAN1) := FALSE;
+next(ControlerLAN1) := case
+     CorporateAuthenticationServer & LocalHMILAN1 : TRUE;
+        ControlerLAN1 : FALSE;
+        TRUE    : ControlerLAN1; 
+    esac;
+
+guard_FDC1 := FALSE;
+init(FiledDeviceC1) := FALSE;
+next(FiledDeviceC1) := case
+        guard_FDC1 & ControlerLAN1 & ControlCenterPatchServer : TRUE;
+        FiledDeviceC1 : FALSE;
+        TRUE    : FiledDeviceC1; 
+    esac;
+
+guard_SC1 := FALSE;
+init(SensorC1) := FALSE;
+next(SensorC1) := case
+        guard_SC1 & ControlerLAN1 : TRUE;
+        SensorC1 : FALSE;
+        TRUE    : SensorC1; 
+    esac;
+
+guard_AC1 := FALSE;
+init(ActuatorC1) := FALSE;
+next(ActuatorC1) := case
+        guard_AC1 & ControlerLAN1 : TRUE;
+        ActuatorC1 : FALSE;
+        TRUE    : ActuatorC1; 
+    esac;
+
+guard_LHMI1 := FALSE;
+init(LocalHMI1) := FALSE;
+next(LocalHMI1) := case
+        guard_LHMI1 & ControlerLAN1 : TRUE;
+        LocalHMI1 : FALSE;
+        TRUE    : LocalHMI1; 
+    esac;
+
+guard_FDL1 := FALSE;
+init(FiledDeviceL1) := FALSE;
+next(FiledDeviceL1) := case
+        guard_FDL1 & LocalHMI1 : TRUE;
+        FiledDeviceL1 : FALSE;
+        TRUE    : FiledDeviceL1; 
+    esac;
+
+guard_SL1 := FALSE;
+init(SensorL1) := FALSE;
+next(SensorL1) := case
+        guard_SL1 & LocalHMI1 : TRUE;
+        SensorL1 : FALSE;
+        TRUE    : SensorL1; 
+    esac;
+
+guard_AL1 := FALSE;
+init(ActuatorL1) := FALSE;
+next(ActuatorL1) := case
+        guard_AL1 & LocalHMI1 : TRUE;
+        ActuatorL1 : FALSE;
+        TRUE    : ActuatorL1; 
+    esac;
+
+----LocalHMILAN2----
+
+init(LocalHMILAN2) := FALSE;
+next(LocalHMILAN2) := case
+      ManufacturingZoneDemilitarizedZones : TRUE;
+        LocalHMILAN2 : FALSE;
+        TRUE    : LocalHMILAN2; 
+    esac;
+
+init(ControlerLAN2) := FALSE;
+next(ControlerLAN2) := case
+     CorporateAuthenticationServer & LocalHMILAN2 : TRUE;
+        ControlerLAN1 : FALSE;
+        TRUE    : ControlerLAN1; 
+    esac;
+
+guard_FDC2 := FALSE;
+init(FiledDeviceC2) := FALSE;
+next(FiledDeviceC2) := case
+        guard_FDC2 & ControlerLAN2 & ControlCenterPatchServer : TRUE;
+        FiledDeviceC2 : FALSE;
+        TRUE    : FiledDeviceC2; 
+    esac;
+
+guard_SC2 := FALSE;
+init(SensorC2) := FALSE;
+next(SensorC2) := case
+        guard_SC2 & ControlerLAN2 : TRUE;
+        SensorC2 : FALSE;
+        TRUE    : SensorC2; 
+    esac;
+
+guard_AC2 := FALSE;
+init(ActuatorC2) := FALSE;
+next(ActuatorC2) := case
+        guard_AC2 & ControlerLAN2 : TRUE;
+        ActuatorC2 : FALSE;
+        TRUE    : ActuatorC2; 
+    esac;
+
+guard_LHMI2 := FALSE;
+init(LocalHMI2) := FALSE;
+next(LocalHMI2) := case
+        guard_LHMI2 & ControlerLAN2 : TRUE;
+        LocalHMI2 : FALSE;
+        TRUE    : LocalHMI2; 
+    esac;
+
+guard_FDL2 := FALSE;
+init(FiledDeviceL2) := FALSE;
+next(FiledDeviceL2) := case
+        guard_FDL2 & LocalHMI2 : TRUE;
+        FiledDeviceL2 : FALSE;
+        TRUE    : FiledDeviceL2; 
+    esac;
+
+guard_SL2 := FALSE;
+init(SensorL2) := FALSE;
+next(SensorL2) := case
+        guard_SL2 & LocalHMI2 : TRUE;
+        SensorL2 : FALSE;
+        TRUE    : SensorL2; 
+    esac;
+
+guard_AL2 := FALSE;
+init(ActuatorL2) := FALSE;
+next(ActuatorL2) := case
+        guard_AL2 & LocalHMI2 : TRUE;
+        ActuatorL2 : FALSE;
+        TRUE    : ActuatorL2; 
+    esac;
+
+----ICSRouter--Configuration----
+
+LTLSPEC G (ICSRouter -> F (CorporateFirewall & ControlCenterFirewall & ManufacturingZoneFireWall)) &  H ((CorporateFirewall & ControlCenterFirewall & ManufacturingZoneFireWall) -> O ICSRouter);
+
+LTLSPEC G (CorporateDemilitarizedZones -> F (CorporateAuthenticationServer & CorporateEmailServer & CorporateFTPServer & CorporateWebServer)) &  H ((CorporateAuthenticationServer & CorporateEmailServer & CorporateFTPServer & CorporateWebServer) -> O CorporateDemilitarizedZones);
+
+LTLSPEC G ( CorporateDemilitarizedZones -> F CorporateAuthenticationServer ) & H (CorporateAuthenticationServer -> O CorporateDemilitarizedZones);
+
+LTLSPEC G ((CorporateDemilitarizedZones & CorporateAuthenticationServer) -> F CorporateWebServer );
+
+LTLSPEC G ((CorporateAuthenticationServer & CorporateDemilitarizedZones & guard_CFTP) -> F CorporateFTPServer) | G ((CorporateFTPServer & CorporateDemilitarizedZones & guard_CE) -> F CorporateEmailServer);
+
+LTLSPEC G (CorporateAuthenticationServer & EnterpriseDemilitarizedZones -> F BusinessServer); 
+
+LTLSPEC G ((CorporateAuthenticationServer & EnterpriseDemilitarizedZones & guard_EWS) -> F EnterpriseWebApplicationServer) | G ((EnterpriseWebApplicationServer & EnterpriseDemilitarizedZones & guard_EDS) -> F EnterpriseDomainServer) | G ((BusinessServer & EnterpriseDemilitarizedZones & guard_ED)-> F EnterpriseDesktop);
+
+LTLSPEC G ( (CorporateAuthenticationServer & ControlCenterDemilitarizedZones & guard_CCW) -> F ControlCenterWorkstation) | G ((ControlCenterDemilitarizedZones & guard_CCAV) -> F ControlCenterAV) | G ( (ControlCenterDemilitarizedZones & guard_CCH) -> F ControlCenterHistorian) | G ((ControlCenterDemilitarizedZones & guard_CCPS) -> F ControlCenterPatchServer) | G((ControlCenterDemilitarizedZones & guard_CCRA) -> F ControlCenterRemoteAcess);
+
+LTLSPEC F (ControlCenterRemoteAcess) -> ( ! ControlCenterRemoteAcess U (ControlCenterDemilitarizedZones & guard_CCRA));
+
+LTLSPEC G (ManufacturingZoneDemilitarizedZones -> F ManufacturingZoneDomainController) & H (ManufacturingZoneDomainController -> O ManufacturingZoneDemilitarizedZones);
+
+LTLSPEC G ( ManufacturingZoneDemilitarizedZones -> F ManufacturingZoneConfigurationServer) & H (ManufacturingZoneConfigurationServer -> O ManufacturingZoneDemilitarizedZones);
+
+LTLSPEC G (( CorporateAuthenticationServer & guard_MZEWS & ManufacturingZoneDemilitarizedZones) -> F ManufacturingZoneEngineeringWorkstations);
+
+LTLSPEC G ((CorporateAuthenticationServer &  guard_MZDBS & ManufacturingZoneDemilitarizedZones) -> F ManufacturingZoneDatabaseServer); 
+
+LTLSPEC (ManufacturingZoneDemilitarizedZones -> F ((ManufacturingZoneHistorian & ! ManufacturingZoneHMIComputers) | (!ManufacturingZoneHistorian & ManufacturingZoneHMIComputers))); --XOR---
+
+LTLSPEC G ((guard_MZHMIC & ControlerLAN2 & ControlerLAN1 & ManufacturingZoneDemilitarizedZones) -> F ManufacturingZoneHMIComputers);
+
+LTLSPEC G ( ManufacturingZoneDemilitarizedZones -> F LocalHMILAN1 ) & H (LocalHMILAN1 -> O ManufacturingZoneDemilitarizedZones);
+LTLSPEC G ( CorporateAuthenticationServer & LocalHMILAN1 -> F ControlerLAN1);
+
+LTLSPEC G ((guard_FDC1 & ControlerLAN1 & ControlCenterPatchServer) -> F FiledDeviceC1 ) | G ((guard_SC1 & ControlerLAN1) -> F SensorC1) | G ((guard_AC1 & ControlerLAN1) -> F ActuatorC1);
+
+LTLSPEC G ((guard_LHMI1 & ControlerLAN1) -> F LocalHMI1);
+
+LTLSPEC G ( (guard_FDL1 & LocalHMI1) -> F FiledDeviceL1) | G ((guard_SL1 & LocalHMI1) -> F SensorL1) | G ((guard_AL1 & LocalHMI1) -> F ActuatorL1);
+
+
+LTLSPEC G ( ManufacturingZoneDemilitarizedZones -> F LocalHMILAN2 ) & H (LocalHMILAN2 -> O ManufacturingZoneDemilitarizedZones);
+LTLSPEC G (CorporateAuthenticationServer & LocalHMILAN2 -> F ControlerLAN2);
+
+LTLSPEC G ((guard_FDC2 & ControlerLAN2 & ControlCenterPatchServer) -> F FiledDeviceC2 ) | G ((guard_SC2 & ControlerLAN2) -> F SensorC2) | G ((guard_AC2 & ControlerLAN2) -> F ActuatorC2);
+
+LTLSPEC G ((guard_LHMI2 & ControlerLAN2) -> F LocalHMI2);
+
+LTLSPEC G ( (guard_FDL2 & LocalHMI2) -> F FiledDeviceL2) | G ((guard_SL2 & LocalHMI2) -> F SensorL2) | G ((guard_AL2 & LocalHMI2) -> F ActuatorL2);
